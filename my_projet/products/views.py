@@ -11,7 +11,7 @@ class ProductCreateView(CreateView):
     model = Product     # Modèle à utiliser
     form_class = ProductForm        # Formulaire à utiliser
     template_name = 'products/product_form.html'        # Template pour afficher le formulaire
-    success_url = reverse_lazy('products:product_list')       # URL de redirection après la création
+    success_url = reverse_lazy('product_list')       # URL de redirection après la création
 
 
 class ProductListView(ListView):
@@ -30,10 +30,10 @@ class ProductUpdateView(UpdateView):
     model = Product
     form_class = ProductForm
     template_name = 'products/product_form.html'
-    success_url = reverse_lazy('products:product_list')
+    success_url = reverse_lazy('product_list')
 
     
 class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'products/product_confirm_delete.html'
-    success_url = reverse_lazy('products:product_list')
+    success_url = reverse_lazy('product_list')

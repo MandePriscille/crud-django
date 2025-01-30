@@ -2,11 +2,10 @@
 
 {% block content %}
 
-<h1>{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} un product</h1>
+<h1>Supprimer l'product "{{ product.titre }}" ?</h1>
 <form method="post">
     {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Enregistrer</button>
+    <button type="submit">Confirmer la suppression</button>
 </form>
 <a href="{% url 'product_list' %}">Annuler</a>
 
