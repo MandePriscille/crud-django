@@ -1,7 +1,30 @@
 
 {% extends 'base.html' %}
 
+
+{% block css %}
+
+<style>
+
+body {
+    background-color: rgb(240, 240, 240);
+    margin: 0;
+    padding: 0;
+}
+
+.container{
+    width: 50%;
+    margin: 20px auto;
+    background-color: white;
+    padding: 20px;
+    border-radius: 5px;
+}
+    
+</style>
+{% endblock %}
+
 {% block content %}
+<div class="container">
 <h1>{% if form.instance.pk %}Modifier{% else %}Créer{% endif %} un article</h1>
 <form method="post">
     {% csrf_token %}
@@ -9,4 +32,6 @@
     <button type="submit">Enregistrer</button>
 </form>
 <a href="{% url 'article_list' %}">Annuler</a>
+</div>
+
 {% endblock %}
