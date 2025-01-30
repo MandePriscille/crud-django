@@ -1,0 +1,8 @@
+{% extends 'base.html' %}   
+
+{% block content %}
+<h1>{{ article.titre }}</h1>
+<p>{{ article.contenu }}</p>
+<p>Publié le : {{ article.date_publication }}</p>
+<a href="{% url 'article_list' %}">Retour à la liste</a>
+{% endblock %}

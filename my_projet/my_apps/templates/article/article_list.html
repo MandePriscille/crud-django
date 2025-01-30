@@ -1,0 +1,96 @@
+{% extends 'base.html' %}
+
+{% block css %} 
+<style>
+    body {
+        margin: 0;
+        padding: 0;
+        background-color: #eaeaea;
+        font-family: Arial, sans-serif;
+        font-size: 10px;
+    }
+    
+    h1 {
+        text-transform: uppercase;
+        text-align: center;
+        margin-top: 20px;
+    }
+
+    a {
+        text-decoration: none;
+        color: white;
+        background-color: #007bff;
+        padding: 8px 12px;
+        border-radius: 5px;
+    }
+
+    a:hover {
+        background-color: #0056b3;
+    }
+
+    table {
+        width: 80%;
+        margin: 20px auto;
+        border-collapse: collapse;
+        background-color: white;
+    }
+
+    th, td {
+        padding: 10px;
+        border: 1px solid #ccc;
+        text-align: center;
+    }
+
+    th {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .actions a {
+        margin: 0 5px;
+    }
+
+    .create-btn {
+        display: block;
+        width: fit-content;
+        margin: 20px auto;
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>Articles</h1>
+
+<a href="{% url 'article_create' %}" class="create-btn">Créer un nouvel article</a>
+
+<table>
+    <tr>
+        <th>N°</th>
+        <th>Titre</th>
+        <th>Description</th>
+        <th>Date de publication</th>
+        <th>Actions</th>
+    </tr>
+    
+    {% for article in article %}
+        <tr>
+            <td>{{ article.id }}</td>
+            <td>{{ article.titre }}</td>
+            <td>{{ article.contenu }}</td>
+            <td>{{ article.date_publication }}</td>
+            <td class="actions">
+                <a href="{% url 'article_update' article.id %}">Modifier</a>
+                <a href="{% url 'article_delete' article.id %}">Supprimer</a>
+                <a href="{% url 'article_detail' article.id %}">Voir</a>
+            </td>
+        </tr>
+    {% empty %}
+        <tr>
+            <td colspan="5">Aucun article disponible.</td>
+        </tr>
+    {% endfor %}
+</table>
+
+
+{% endblock %}
