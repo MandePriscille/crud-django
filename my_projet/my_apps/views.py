@@ -1,4 +1,6 @@
 from django.shortcuts import get_object_or_404, redirect, render
+from django.core.mail import send_mail
+from django.http import HttpResponse
 
 from my_apps.models import Article
 from .forms import ArticleForm
@@ -46,3 +48,15 @@ def article_delete(request, pk):
         article.delete()
         return redirect('article_list')
     return render(request, 'article/confirmation.html', {'article': article})
+
+
+# envoie des mail
+
+def send_simple_mail(request):
+    subject = 'suject de l\'e-maill'
+    message = 'message de l\e-email'
+    from_email = 'settings.EMAIL_HOST_USER'
+    recipient_list = ['mandepriscille1@gmail.com']
+
+    send_mail(subject, message, from_email, recipient_list)
+    return HttpResponse('simple email envoie avec succès!')
