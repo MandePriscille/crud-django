@@ -1,5 +1,5 @@
 from django import forms
-from .models import Product
+from .models import Product, Achat
 
 
 class ProductForm(forms.ModelForm):
@@ -35,3 +35,40 @@ class ProductForm(forms.ModelForm):
             }
         }   
         
+
+class AchatForm(forms.ModelForm):
+    class Meta:
+        model: Achat
+        fields = ['user','product','quantity','email']
+        widgets = {
+            'email':forms.TextInput(attrs={'type':'email'})
+        }
+        labels = {
+            'user':'Utilisateur',
+            'product':'Produit',
+            'quantity':'Quantite',
+            'email':'Email'
+        }
+        help_texts = {
+            'user':'Utilisateur',
+            'product':'Produit',
+            'quantity':'Quantite',
+            'email':'Email'
+        }
+        error_messages = {
+            'user':{
+                'required':'L\'utilisateur est obligatoire',
+            },
+            'product':{
+                'required':'Le produit est obligatoire',
+            },
+            'quantity':{
+                'required':'La quantite est obligatoire',
+                'max_digits':'La quantite doit faire moins de 10 chiffres après la virgule',
+                'decimal_places':'La quantite doit avoir au moins 2 décimales'
+            },
+            'email':{
+                'required':'L\'email est obligatoire',
+                'email':'L\'email est invalide'
+            }
+        }
