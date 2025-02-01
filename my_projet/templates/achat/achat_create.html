@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<h1> Achat d'un produit</h1>
+
+{% if messages %}
+    <div class="messages">
+        {% for message in messages %}
+            <div class="alert {% if message.tags %}alert-{{ message.tags }}{% endif %}">
+                {{ message }}
+            </div>
+        {% endfor %}
+    </div>
+{% endif %}
+
+
+{% if user.is_authenticated %}
+    <!-- Formulaire d'achat -->
+    <form method="post">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit" class="btn btn-primary">Acheter</button>
+    </form>
+{% else %}
+    <div class="alert alert-warning">
+        Vous devez être connecté pour effectuer un achat. <a href="{% url 'login' %}">Connectez-vous ici</a>.
+    </div>
+{% endif %}
+
+{% endblock %}

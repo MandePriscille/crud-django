@@ -130,6 +130,12 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 
+
+LOGIN_REDIRECT_URL = 'achat_product'  # Redirige après connexion
+LOGOUT_REDIRECT_URL = '/login/'  # Redirige après déconnexion
+
+
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
 

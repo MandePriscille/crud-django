@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block content %}
+<h1>Liste des achats</h1>
+
+<ul>
+    {% for achat in achat %}
+        <li> {{ achat.email }} </li>
+        <li> {{ achat.user.first_name }} </li>
+        <li> {{ achat.product.name }}  </li>
+        <li> {{ achat.quantity }} - </li>
+    {% endfor %}
+</ul>
+
+{% endblock %}

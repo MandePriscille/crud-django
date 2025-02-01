@@ -1,14 +1,21 @@
 import logging
 from django.shortcuts import get_object_or_404, redirect, render
+from django.contrib.auth import authenticate, login
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth import get_user_model
 from django.urls import reverse_lazy
 from django.core.mail import send_mail
 from django.views.generic import CreateView, ListView, DetailView, UpdateView, DeleteView, TemplateView
 from django.views import View
 from django.contrib import messages
 
-from .forms import ProductForm, AchatForm
-from .models import Achat, Product 
+from django.contrib.auth.decorators import login_required
+from django.utils.decorators import method_decorator
 
+from .forms import ProductForm, AchatForm
+from products.forms import AchatForm
+
+from products.models import Product, Achat, User
 logger = logging.getLogger(__name__)
 # Utilisation des vues base sur les classes
 
@@ -42,6 +49,27 @@ class ProductDeleteView(DeleteView):
     model = Product
     template_name = 'products/product_confirm_delete.html'
     success_url = reverse_lazy('product_list')
+
+
+class CustomLoginView(View):
+    template_name = 'account/login.html'
+
+    def get(self, request):
+        return render(request, self.template_name)
+
+    def post(self, request):
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(request, username=username, password=password)
+        if user is not None:
+            login(request, user)
+            messages.success(request, "Connexion réussie !")
+            return redirect('achat_list')  # Redirection après connexion
+        else:
+            messages.error(request, "Nom d'utilisateur ou mot de passe incorrect.")
+            return render(request, self.template_name)
+
 
 
 # Implementation des mail lors de l'achat d'un produit
@@ -83,8 +111,10 @@ class AcheterProductView(View):
 
 # utilisation des signaux pour envoyer les mails
 
-class AchatView(TemplateView):
-    template_name ='achat/achat.html'
+
+
+class AchatCreateView(LoginRequiredMixin, TemplateView):
+    template_name ='achat/achat_create.html'
     
     def get_context_data(self, **kwargs):
        context = super().get_context_data(**kwargs)
@@ -93,6 +123,9 @@ class AchatView(TemplateView):
            # Récupération de tous les produits
            products = Product.objects.all()
            context['products'] = products
+
+           users = User.objects.all()
+           context['users'] = users 
 
            # Initialisation du formulaire d'achat
            context['form'] = AchatForm()
@@ -111,18 +144,26 @@ class AchatView(TemplateView):
             try:
                 # Créer l'achat sans l'enregistrer immédiatement
                 achat = form.save(commit=False)
-
                 # Vérifier si l'utilisateur est authentifié
+                
                 if request.user.is_authenticated:
-                    achat.user = request.user
-                    achat.save()
+                    # Vérifiez que request.user est bien une instance de User
+                    if isinstance(request.user, User):
+                        achat.user = request.user
+                        achat.save()
+                        messages.success(request, "Achat effectué avec succès !")
+                        print('****************************************************',achat)
 
-                    # Envoyer l'e-mail de confirmation
-                    self.envoyer_email_confirmation(achat)
-
-                    messages.success(request, "Achat effectué avec succès !")
+                    else:
+                        messages.error(request, "L'utilisateur n'est pas une instance valide de User.")
                 else:
                     messages.error(request, "Vous devez être connecté pour effectuer un achat.")
+
+                    # Envoyer l'e-mail de confirmation
+                    # self.envoyer_email_confirmation(achat)
+                #     messages.success(request, "Achat effectué avec succès !")
+                # else:
+                #     messages.error(request, "Vous devez être connecté pour effectuer un achat.")
 
             except Exception as e:
                 logger.error(f"Erreur lors de l'achat: {e}")
@@ -131,4 +172,19 @@ class AchatView(TemplateView):
         else:
             messages.error(request, "Le formulaire contient des erreurs.")
 
-        return redirect('achat')
+        return redirect('achat_list')
+
+class AchatListView(TemplateView):
+    template_name = 'achat/list_achat.html'
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+
+        try:
+            achat = Achat.objects.all()
+            context['achat'] = achat
+        except Exception as e: 
+            logger.error(f"Erreur lors de la récupération des données: {e}")
+            messages.error(self.request, "Une erreur est survenue lors du chargement des achats.")
+        return context
+    

@@ -38,11 +38,11 @@ class ProductForm(forms.ModelForm):
 
 class AchatForm(forms.ModelForm):
     class Meta:
-        model: Achat
+        model= Achat
         fields = ['user','product','quantity','email']
         widgets = {
             'email':forms.TextInput(attrs={'type':'email'})
-        }
+        } 
         labels = {
             'user':'Utilisateur',
             'product':'Produit',
